@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
 
+import com.javaweb.Builder.BuildingSearchBuilder;
 import com.javaweb.repository.entity.BuildingEntity;
 import com.javaweb.repository.entity.DistrictEntity;
 import jakarta.persistence.EntityManager;
@@ -38,9 +39,8 @@ public class BuidingAPI {
     private LocalContainerEntityManagerFactoryBean entityManagerFactory;
 
 	@GetMapping("/api/building/")
-	public List<BuildingSearchResponse> getBuilding(@RequestParam Map<String, Object> params,
-													@RequestParam(value = "Code", required = false) List<String> Code) {
-		List<BuildingSearchResponse> result = buildingService.findAll(params, Code);
+	public List<BuildingSearchResponse> getBuilding( BuildingSearchBuilder builder) {
+		List<BuildingSearchResponse> result = buildingService.findAll(builder);
 		return result;
 
 	}

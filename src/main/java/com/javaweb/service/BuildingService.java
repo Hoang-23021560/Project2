@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 
+import com.javaweb.Builder.BuildingSearchBuilder;
 import com.javaweb.model.BuildingSearchRequest;
 import com.javaweb.model.BuildingSearchResponse;
 import com.javaweb.repository.entity.BuildingEntity;
@@ -12,5 +13,5 @@ import com.javaweb.repository.entity.BuildingEntity;
 //interface chỉ chứa các hằng số và abstract method
 //
 public interface BuildingService {
-	List<BuildingSearchResponse> findAll(Map<String, Object> params,List<String> Code);
+	List<BuildingSearchResponse> findAll( BuildingSearchBuilder builder);
 }

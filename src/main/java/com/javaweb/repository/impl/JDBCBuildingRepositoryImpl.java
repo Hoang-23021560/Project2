@@ -166,8 +166,8 @@ public class JDBCBuildingRepositoryImpl implements BuildingRepository {
 		            building.setServiceFee(rs.getDouble("serviceFee"));
 		            building.setManagerName(rs.getString("managerName"));
 		            building.setManagerPhone(rs.getString("managerPhone")); // Tên cột chuẩn trong DB
-		            building.setNameDistrict(rs.getString("nameDistrict"));
-		            building.setRentAreas(rs.getString("rentAreas")); // Nhận xâu diện tích thuê [cite: 1]
+		            building.getDistrict().setNameDistrict(rs.getString("nameDistrict"));
+//		            building.getRentarea().set(rs.getString("rentAreas")); // Nhận xâu diện tích thuê [cite: 1]
 		            
 		            // Thêm đối tượng vào danh sách
 		            result.add(building);

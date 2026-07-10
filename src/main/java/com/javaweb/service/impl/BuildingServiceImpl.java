@@ -3,6 +3,7 @@ package com.javaweb.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.javaweb.Builder.BuildingSearchBuilder;
 import com.javaweb.Converter.BuildingSearchBuilderConverter;
@@ -28,12 +29,12 @@ public class BuildingServiceImpl implements BuildingService{
     private BuildingSearchBuilderConverter buildingSearchBuilderConverter;
 	
 	@Override
-	public List<BuildingSearchResponse> findAll(Map<String, Object> params,List<String> Code) {
-        BuildingSearchBuilder buildingSearchBuilder = buildingSearchBuilderConverter.toBuildingSearchConverter(params,Code);
+	public List<BuildingSearchResponse> findAll( BuildingSearchBuilder builder) {
+//        BuildingSearchBuilder buildingSearchBuilder = buildingSearchBuilderConverter.toBuildingSearchConverter(params,Code);
 		
 			
 		// 1. Gọi tầng Repository để lấy dữ liệu thực thể đã qua bộ lọc 16 fields
-        List<BuildingEntity> buildingEntities = buildingRepository.findAll(buildingSearchBuilder);
+        List<BuildingEntity> buildingEntities = buildingRepository.findAll( builder);
         
         
         // List chứa kết quả trả ra cho người dùng (11 fields)
@@ -78,8 +79,12 @@ public class BuildingServiceImpl implements BuildingService{
             //response.setRentPrice(entity.getRentPrice());
 
             // Field 9: Diện tích thuê - Nhận trực tiếp cái xâu đã được gom từ GROUP_CONCAT trong DB 
-            response.setRentAreas(entity.getRentAreas() != null ? entity.getRentAreas() : "Trống");
+            String rentAreas = entity.getRentarea()
+                    .stream()
+                    .map(r -> String.valueOf(r.getValue()))
+                    .collect(Collectors.joining(", "));
 
+            response.setRentAreas(rentAreas);
             // Field 10: Phí dịch vụ 
             //response.setServiceFee(entity.getServiceFee());
 

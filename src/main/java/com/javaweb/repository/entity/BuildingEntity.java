@@ -43,9 +43,9 @@ public class BuildingEntity {
 	@Column(name = "brokerageFeePercent")
     private Double brokerageFeePercent;
     
-    // --- CÁC TRƯỜNG BỔ SUNG ĐỂ HỨNG DỮ LIỆU JOIN ---
-    private String nameDistrict; // Lấy từ bảng District
-    private String rentAreas;    // Xâu diện tích lấy từ bảng RentArea
+//    // --- CÁC TRƯỜNG BỔ SUNG ĐỂ HỨNG DỮ LIỆU JOIN ---
+//    private String nameDistrict; // Lấy từ bảng District
+//    private String rentAreas;    // Xâu diện tích lấy từ bảng RentArea
 
 	public DistrictEntity getDistrict() {
 		return district;
@@ -60,21 +60,28 @@ public class BuildingEntity {
 	private DistrictEntity district; //gionng cai mappedBy that ra mappedBy phải giống tên biến
     // Thêm các Constructor, Getter và Setter cho tất cả các trường...
 	@OneToMany(mappedBy = "building",fetch = FetchType.LAZY)
-	private List<RentAreaEntity> items = new ArrayList<>();
+	private List<RentAreaEntity> rentarea = new ArrayList<>();
 
-	public List<RentAreaEntity> getItems() {
-		return items;
+
+	@OneToMany(mappedBy = "buildingType",fetch = FetchType.LAZY)
+	private List<BuildingTypeEntity> buildingType;
+
+	@ManyToMany(mappedBy = "buildings",fetch = FetchType.LAZY)
+	private List<UserEntity> user = new ArrayList<>();
+
+	public List<RentAreaEntity> getRentarea() {
+		return rentarea;
 	}
 
-	public void setItems(List<RentAreaEntity> items) {
-		this.items = items;
+	public void setRentarea(List<RentAreaEntity> rentarea) {
+		this.rentarea = rentarea;
 	}
-
-	public String getNameDistrict() { return nameDistrict; }
-    public void setNameDistrict(String nameDistrict) { this.nameDistrict = nameDistrict; }
-    
-    public String getRentAreas() { return rentAreas; }
-    public void setRentAreas(String rentAreas) { this.rentAreas = rentAreas; }
+//
+//	public String getNameDistrict() { return nameDistrict; }
+//    public void setNameDistrict(String nameDistrict) { this.nameDistrict = nameDistrict; }
+//
+//    public String getRentAreas() { return rentAreas; }
+//    public void setRentAreas(String rentAreas) { this.rentAreas = rentAreas; }
 	public Long getId() {
 		return id;
 	}

@@ -32,6 +32,19 @@ public class UserEntity {
     inverseJoinColumns = @JoinColumn(name = "roleId",nullable = false))
     private List<RoleEntity> roles = new ArrayList<>();
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "aggignmentbuilding",
+    joinColumns = @JoinColumn(name = "userId",nullable = false),
+    inverseJoinColumns = @JoinColumn(name = "buildingId",nullable = false))
+    private List<BuildingEntity> buildings;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "assigmentcustomer",
+    joinColumns = @JoinColumn(name = "userId",nullable = false),
+    inverseJoinColumns = @JoinColumn(name = "customerId",nullable = false))
+    private List<CustomerEntity> customers;
+
+
     public List<RoleEntity> getRoles() {
         return roles;
     }
