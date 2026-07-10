@@ -55,7 +55,7 @@ public class BuildingEntity {
 		this.district = district;
 	}
 
-	@ManyToOne
+	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinColumn(name = "districtId")//join khoa ngoai //sinh ra cot districtId
 	private DistrictEntity district; //gionng cai mappedBy that ra mappedBy phải giống tên biến
     // Thêm các Constructor, Getter và Setter cho tất cả các trường...

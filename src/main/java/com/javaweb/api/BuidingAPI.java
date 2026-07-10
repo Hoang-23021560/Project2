@@ -7,19 +7,16 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
 
+import com.javaweb.repository.entity.BuildingEntity;
+import com.javaweb.repository.entity.DistrictEntity;
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.javaweb.customexception.FieldRequierdException;
 import com.javaweb.model.BuildingDTO;
@@ -32,9 +29,13 @@ import com.javaweb.service.BuildingService;
 @PropertySource("classpath:application.properties")
 public class BuidingAPI {
 	@Autowired
+	private EntityManager entityManager;
+	@Autowired
 	private BuildingService buildingService;
 	@Value("${dev.nguyen}")
 	private String data;
+    @Autowired
+    private LocalContainerEntityManagerFactoryBean entityManagerFactory;
 
 	@GetMapping("/api/building/")
 	public List<BuildingSearchResponse> getBuilding(@RequestParam Map<String, Object> params,
@@ -113,9 +114,44 @@ public class BuidingAPI {
 //		}
 //	}
 //
-	@DeleteMapping("/api/building/{id}")
-	public void deleteBuilding(@PathVariable Integer id) {
-		System.out.println(data);
+	@PostMapping(value = "/api/building/")
+	@Transactional
+	public void createBuilding(@RequestBody BuildingSearchRequest request){
+
+	BuildingEntity buildingEntity = new BuildingEntity();
+		buildingEntity.setName(request.getName());
+		buildingEntity.setWard(request.getWard());
+		DistrictEntity district = new DistrictEntity();
+		district.setId(request.getDistrictId());
+		buildingEntity.setDistrict(district);
+		entityManager.persist(buildingEntity);// thêm inserrt database
+		System.out.println("ok");
+
+}
+	@PutMapping(value = "/api/building/")
+	@Transactional
+	public void updateBuilding(@RequestBody BuildingSearchRequest request){
+
+		BuildingEntity buildingEntity = new BuildingEntity();
+		buildingEntity.setId(1L);
+		buildingEntity.setName(request.getName());
+		buildingEntity.setWard(request.getWard());
+		DistrictEntity district = new DistrictEntity();
+		district.setId(request.getDistrictId());
+		buildingEntity.setDistrict(district);
+		entityManager.merge(buildingEntity);// thêm inserrt database
+		System.out.println("ok");
+
+	}
+	@DeleteMapping("/api/building/{districtId}")
+	@Transactional
+	public void deleteBuilding(@PathVariable Long districtId) {
+		BuildingEntity buildingEntity = entityManager.find(BuildingEntity.class,districtId);
+		DistrictEntity districtEntity = entityManager.find(DistrictEntity.class,districtId);
+
+
+		entityManager.remove(buildingEntity);
+		entityManager.remove((districtEntity));
 	}
 
 }
