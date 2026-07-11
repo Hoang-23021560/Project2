@@ -10,4 +10,8 @@ import com.javaweb.repository.entity.*;
 
 public interface BuildingRepository {
 	List<BuildingEntity> findAll(BuildingSearchBuilder buildingSearchBuilder);
+	void insert(BuildingEntity buildingEntity);
+	void update(BuildingEntity buildingEntity);
+	void delete(long id);
+	BuildingEntity findById(Long id);
 }

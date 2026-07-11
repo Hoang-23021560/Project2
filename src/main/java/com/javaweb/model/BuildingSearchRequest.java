@@ -3,8 +3,9 @@ import java.util.List;
 
 
 public class BuildingSearchRequest {
+	private Long id;
     private String name;
-    private Integer floorArea;
+    private Long floorArea;
     private Long districtId;
     private String ward;
     private String street;
@@ -25,10 +26,10 @@ public class BuildingSearchRequest {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public Integer getFloorArea() {
+	public Long getFloorArea() {
 		return floorArea;
 	}
-	public void setFloorArea(Integer floorArea) {
+	public void setFloorArea(Long floorArea) {
 		this.floorArea = floorArea;
 	}
 	public Long getDistrictId() {
@@ -115,6 +116,12 @@ public class BuildingSearchRequest {
 	public void setCode(List<String> Code) {
 		this.Code = Code;
 	}
-    
-    
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 }

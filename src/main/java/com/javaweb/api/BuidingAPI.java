@@ -1,29 +1,17 @@
 package com.javaweb.api;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.*;
 
-import com.javaweb.Builder.BuildingSearchBuilder;
-import com.javaweb.repository.entity.BuildingEntity;
-import com.javaweb.repository.entity.DistrictEntity;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import com.javaweb.customexception.FieldRequierdException;
-import com.javaweb.model.BuildingDTO;
 import com.javaweb.model.BuildingSearchRequest;
 import com.javaweb.model.BuildingSearchResponse;
-import com.javaweb.model.ErrorResponseDTO;
 import com.javaweb.service.BuildingService;
 
 @RestController
@@ -117,41 +105,18 @@ public class BuidingAPI {
 	@PostMapping(value = "/api/building/")
 	@Transactional
 	public void createBuilding(@RequestBody BuildingSearchRequest request){
-
-	BuildingEntity buildingEntity = new BuildingEntity();
-		buildingEntity.setName(request.getName());
-		buildingEntity.setWard(request.getWard());
-		DistrictEntity district = new DistrictEntity();
-		district.setId(request.getDistrictId());
-		buildingEntity.setDistrict(district);
-		entityManager.persist(buildingEntity);// thêm inserrt database
-		System.out.println("ok");
-
+		buildingService.insertOrUpdate(request);
 }
 	@PutMapping(value = "/api/building/")
 	@Transactional
 	public void updateBuilding(@RequestBody BuildingSearchRequest request){
-
-		BuildingEntity buildingEntity = new BuildingEntity();
-		buildingEntity.setId(1L);
-		buildingEntity.setName(request.getName());
-		buildingEntity.setWard(request.getWard());
-		DistrictEntity district = new DistrictEntity();
-		district.setId(request.getDistrictId());
-		buildingEntity.setDistrict(district);
-		entityManager.merge(buildingEntity);// thêm inserrt database
-		System.out.println("ok");
+		buildingService.insertOrUpdate(request);
 
 	}
 	@DeleteMapping("/api/building/{districtId}")
 	@Transactional
-	public void deleteBuilding(@PathVariable Long districtId) {
-		BuildingEntity buildingEntity = entityManager.find(BuildingEntity.class,districtId);
-		DistrictEntity districtEntity = entityManager.find(DistrictEntity.class,districtId);
-
-
-		entityManager.remove(buildingEntity);
-		entityManager.remove((districtEntity));
+	public void deleteBuilding(@PathVariable List<Long> districtId) {
+		buildingService.delete(districtId);
 	}
 
 }

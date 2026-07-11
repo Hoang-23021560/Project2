@@ -7,6 +7,7 @@ import java.util.Map;
 import com.javaweb.Builder.BuildingSearchBuilder;
 import com.javaweb.model.BuildingSearchRequest;
 import com.javaweb.model.BuildingSearchResponse;
+import com.javaweb.repository.BuildingRepository;
 import com.javaweb.repository.entity.BuildingEntity;
 
 //hàm abtract không có body
@@ -14,4 +15,7 @@ import com.javaweb.repository.entity.BuildingEntity;
 //
 public interface BuildingService {
 	List<BuildingSearchResponse> findAll( BuildingSearchRequest request);
+
+	void insertOrUpdate(BuildingSearchRequest request);
+	void delete(List<Long> ids);
 }

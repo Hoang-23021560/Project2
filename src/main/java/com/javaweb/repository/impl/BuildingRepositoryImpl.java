@@ -23,6 +23,7 @@ import static com.javaweb.utils.StringUtil.checkString;
 @Primary
 public class BuildingRepositoryImpl implements BuildingRepository {
     @PersistenceContext
+
     private EntityManager entityManager;
 
     public void joinTable(BuildingSearchBuilder builder,StringBuilder jpql){
@@ -100,4 +101,25 @@ public class BuildingRepositoryImpl implements BuildingRepository {
 //        Query query = entityManager.createNativeQuery(sql,BuildingEntity.class);
         return query.getResultList();
     }
+
+    @Override
+    public void insert(BuildingEntity buildingEntity) {
+        entityManager.persist(buildingEntity);
+    }
+
+    @Override
+    public void update(BuildingEntity buildingEntity) {
+        entityManager.merge(buildingEntity);
+    }
+
+    @Override
+    public void delete(long id) {
+        entityManager.remove(id);
+    }
+
+    @Override
+    public BuildingEntity findById(Long id) {
+        return entityManager.find(BuildingEntity.class,id);
+    }
+
 }

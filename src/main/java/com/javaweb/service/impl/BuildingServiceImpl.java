@@ -2,16 +2,16 @@ package com.javaweb.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.javaweb.Builder.BuildingSearchBuilder;
 import com.javaweb.Converter.BuildingSearchBuilderConverter;
+import com.javaweb.repository.entity.DistrictEntity;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.javaweb.model.BuildingDTO;
 import com.javaweb.model.BuildingSearchRequest;
 import com.javaweb.model.BuildingSearchResponse;
 import com.javaweb.repository.BuildingRepository;
@@ -118,6 +118,50 @@ public class BuildingServiceImpl implements BuildingService{
         }
 
         return resultList;
+    }
+
+    @Override
+    @Transactional
+    public void insertOrUpdate(BuildingSearchRequest request) {
+            BuildingEntity entity;
+            if(request.getId() != null){
+                entity = buildingRepository.findById(request.getId());
+                if(entity == null){
+                    throw  new RuntimeException("Toa nha khong ton tai");
+                }
+
+            }
+            else{
+                entity = new BuildingEntity();
+            }
+            modelMapper.map(request,BuildingEntity.class);
+        if (request.getFloorArea() != null) {
+            entity.setFloorArea(request.getFloorArea().doubleValue());
+        }
+        if (request.getDistrictId() != null) {
+            DistrictEntity district = new DistrictEntity();
+            district.setId(request.getDistrictId());
+            entity.setDistrict(district);
+        }
+        if (request.getId() != null) {
+            buildingRepository.update(entity);
+        } else {
+            buildingRepository.insert(entity);
+        }
+
+
+    }
+    @Transactional
+    public void deleteBuildings(List<Long> ids) {
+        // Thực hiện vòng lặp xóa từng id trong danh sách gửi lên
+        for (Long id : ids) {
+            buildingRepository.delete(id);
+        }
+    }
+
+    @Override
+    public void delete(List<Long> ids) {
+
     }
 
 }
