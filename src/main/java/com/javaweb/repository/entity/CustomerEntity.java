@@ -21,10 +21,11 @@ public class CustomerEntity {
     private Date createdDate;
     @Column(name = "modifiedDate")
     private Date modifiedDate;
-    @ManyToMany(mappedBy = "customers",fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "customers",fetch = FetchType.LAZY )
     private List<UserEntity> users;
 
-    @OneToMany(mappedBy = "customers",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "customers",fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private List<TransactionsEntity> transactions;
 
     public List<TransactionsEntity> getTransactions() {

@@ -1,7 +1,7 @@
 package com.javaweb.model; // Thay đổi package phù hợp với project của bạn
 
 // BuidlingSearchResponse == BuildingDTO
-public class BuildingSearchResponse {
+public class BuildingResponse {
     
     // 11 fields đầu ra theo yêu cầu từ file timkiemtoanha.txt
     private String name;             // Tên tòa nhà
@@ -20,12 +20,12 @@ public class BuildingSearchResponse {
     // 1. CONSTRUCTORS (Khởi tạo)
     // ==========================================
     
-    public BuildingSearchResponse() {
+    public BuildingResponse() {
     }
 
-    public BuildingSearchResponse(String name, String address, Integer numberOfBasement, String managerName, 
-                                  String managerPhone, Double floorArea, String emptyArea, Double rentPrice, 
-                                  String rentAreas, Double serviceFee, Double brokerageFee) {
+    public BuildingResponse(String name, String address, Integer numberOfBasement, String managerName,
+                            String managerPhone, Double floorArea, String emptyArea, Double rentPrice,
+                            String rentAreas, Double serviceFee, Double brokerageFee) {
         this.name = name;
         this.address = address;
         this.numberOfBasement = numberOfBasement;

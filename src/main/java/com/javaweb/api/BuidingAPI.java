@@ -2,6 +2,7 @@ package com.javaweb.api;
 
 import java.util.*;
 
+import com.javaweb.model.BuildingRequest;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,7 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.web.bind.annotation.*;
 
 import com.javaweb.model.BuildingSearchRequest;
-import com.javaweb.model.BuildingSearchResponse;
+import com.javaweb.model.BuildingResponse;
 import com.javaweb.service.BuildingService;
 
 @RestController
@@ -27,8 +28,8 @@ public class BuidingAPI {
     private LocalContainerEntityManagerFactoryBean entityManagerFactory;
 
 	@GetMapping("/api/building/")
-	public List<BuildingSearchResponse> getBuilding(BuildingSearchRequest request) {
-		List<BuildingSearchResponse> result = buildingService.findAll(request);
+	public List<BuildingResponse> getBuilding(BuildingSearchRequest request) {
+		List<BuildingResponse> result = buildingService.findAll(request);
 		return result;
 
 	}
@@ -104,12 +105,12 @@ public class BuidingAPI {
 //
 	@PostMapping(value = "/api/building/")
 	@Transactional
-	public void createBuilding(@RequestBody BuildingSearchRequest request){
+	public void createBuilding(@RequestBody BuildingRequest request){
 		buildingService.insertOrUpdate(request);
 }
 	@PutMapping(value = "/api/building/")
 	@Transactional
-	public void updateBuilding(@RequestBody BuildingSearchRequest request){
+	public void updateBuilding(@RequestBody BuildingRequest request){
 		buildingService.insertOrUpdate(request);
 
 	}

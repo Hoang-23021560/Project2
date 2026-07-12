@@ -196,11 +196,13 @@ public class BuildingEntity {
 	@JoinColumn(name = "districtId")//join khoa ngoai //sinh ra cot districtId
 	private DistrictEntity district; //gionng cai mappedBy that ra mappedBy phải giống tên biến
     // Thêm các Constructor, Getter và Setter cho tất cả các trường...
-	@OneToMany(mappedBy = "building",fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "building",fetch = FetchType.LAZY,cascade = CascadeType.ALL,
+			orphanRemoval = true)
 	private List<RentAreaEntity> rentarea = new ArrayList<>();
 
 
-	@OneToMany(mappedBy = "building",fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "building",fetch = FetchType.LAZY,cascade = CascadeType.ALL,
+			orphanRemoval = true)
 	private List<BuildingTypeEntity> buildingType;
 
 	@ManyToMany(mappedBy = "buildings",fetch = FetchType.LAZY)

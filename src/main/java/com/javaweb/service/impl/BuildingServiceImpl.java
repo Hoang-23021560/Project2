@@ -1,35 +1,34 @@
 package com.javaweb.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.javaweb.Builder.BuildingSearchBuilder;
 import com.javaweb.Converter.BuildingSearchBuilderConverter;
-import com.javaweb.repository.entity.DistrictEntity;
+import com.javaweb.model.BuildingRequest;
+import com.javaweb.model.BuildingResponse;
+import com.javaweb.model.BuildingSearchRequest;
+import com.javaweb.repository.BuildingRepository;
+import com.javaweb.repository.entity.*;
+import com.javaweb.service.BuildingService;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.javaweb.model.BuildingSearchRequest;
-import com.javaweb.model.BuildingSearchResponse;
-import com.javaweb.repository.BuildingRepository;
-import com.javaweb.repository.entity.BuildingEntity;
-import com.javaweb.service.BuildingService;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
-public class BuildingServiceImpl implements BuildingService{
-	
-	@Autowired
-	private BuildingRepository buildingRepository;
-	@Autowired
-	private ModelMapper modelMapper;
+public class BuildingServiceImpl implements BuildingService {
+
+    @Autowired
+    private BuildingRepository buildingRepository;
+    @Autowired
+    private ModelMapper modelMapper;
     @Autowired
     private BuildingSearchBuilderConverter buildingSearchBuilderConverter;
-	
-	@Override
-	public List<BuildingSearchResponse> findAll( BuildingSearchRequest request) {
+
+    @Override
+    public List<BuildingResponse> findAll(BuildingSearchRequest request) {
 //        BuildingSearchBuilder buildingSearchBuilder = buildingSearchBuilderConverter.toBuildingSearchConverter(params,Code);
 
         BuildingSearchBuilder searchBuilder = new BuildingSearchBuilder.Builder()
@@ -50,17 +49,17 @@ public class BuildingServiceImpl implements BuildingService{
                 .setStaffId(request.getStaffId())
                 .setCode(request.getCode())
                 .build();
-		// 1. Gọi tầng Repository để lấy dữ liệu thực thể đã qua bộ lọc 16 fields
+        // 1. Gọi tầng Repository để lấy dữ liệu thực thể đã qua bộ lọc 16 fields
         List<BuildingEntity> buildingEntities = buildingRepository.findAll(searchBuilder);
-        
-        
+
+
         // List chứa kết quả trả ra cho người dùng (11 fields)
-        List<BuildingSearchResponse> resultList = new ArrayList<>();
+        List<BuildingResponse> resultList = new ArrayList<>();
 
         // 2. Vòng lặp duyệt qua từng thực thể và chuyển đổi (Mapping) sang DTO kết quả
         for (BuildingEntity entity : buildingEntities) {
-            BuildingSearchResponse response = modelMapper.map(entity, BuildingSearchResponse.class);
-            
+            BuildingResponse response = modelMapper.map(entity, BuildingResponse.class);
+
             // Field 1: Tên tòa nhà 
             //response.setName(entity.getName());
 
@@ -78,7 +77,7 @@ public class BuildingServiceImpl implements BuildingService{
             response.setAddress(fullAddress);
 
             // Field 3: Số tầng hầm 
- //           response.setNumberOfBasement(entity.getNumberOfBasement());
+            //           response.setNumberOfBasement(entity.getNumberOfBasement());
 //
 //            // Field 4: Tên quản lý 
 //            response.setManagerName(entity.getManagerName());
@@ -122,46 +121,84 @@ public class BuildingServiceImpl implements BuildingService{
 
     @Override
     @Transactional
-    public void insertOrUpdate(BuildingSearchRequest request) {
-            BuildingEntity entity;
-            if(request.getId() != null){
-                entity = buildingRepository.findById(request.getId());
-                if(entity == null){
-                    throw  new RuntimeException("Toa nha khong ton tai");
-                }
+    public void insertOrUpdate(BuildingRequest request) {
+        BuildingEntity building;
+        if (request.getId() != null) {
+            building = buildingRepository.findById(request.getId());
+            if (building == null) {
+                throw new RuntimeException("Toa nha khong ton tai");
+            }
 
-            }
-            else{
-                entity = new BuildingEntity();
-            }
-            modelMapper.map(request,BuildingEntity.class);
-        if (request.getFloorArea() != null) {
-            entity.setFloorArea(request.getFloorArea().doubleValue());
-        }
-        if (request.getDistrictId() != null) {
-            DistrictEntity district = new DistrictEntity();
-            district.setId(request.getDistrictId());
-            entity.setDistrict(district);
+        } else {
+            building = new BuildingEntity();
         }
         if (request.getId() != null) {
-            buildingRepository.update(entity);
+            for (UserEntity user : new ArrayList<>(building.getUser())) {// lay ra 1 list các nhân viên quản lý tòa nhà có id gửi request
+                user.getBuildings().remove(building);
+            }
+            building.getUser().clear();
+        }
+        // tìm ra đối tương UserEntity tương ứng với Staffid . Để thao tác dữ liệu trên UserEntity
+        if (request.getStaffIds() != null && request.getStaffIds().size() != 0) {
+            List<UserEntity> users = buildingRepository.findByIdStaff(request.getStaffIds());
+            for (UserEntity user : users) {
+                user.getBuildings().add(building);
+            }
+            building.setUser(users);
+        }
+        if(request.getDistrictId() != null){
+            DistrictEntity district = buildingRepository.findByDistrictId(request.getDistrictId());
+
+            building.setDistrict(district);
+        }
+        List<BuildingTypeEntity> buildingTypes = new ArrayList<>();
+
+        for (String code : request.getBuildingTypes()) {
+            BuildingTypeEntity buildingType = new BuildingTypeEntity();
+
+            buildingType.setCode(code);      // code = OFFICE, HOUSE,...
+            buildingType.setBuilding(building);
+
+            buildingTypes.add(buildingType);
+        }
+
+        building.setBuildingType(buildingTypes);
+        List<RentAreaEntity> rentAreas = new ArrayList<>();
+
+        for (Integer value : request.getRentAreas()) {
+
+            RentAreaEntity rentArea = new RentAreaEntity();
+
+            rentArea.setValue(value); // hoặc Long.parseLong tùy kiểu dữ liệu
+
+            rentArea.setBuilding(building);
+
+            rentAreas.add(rentArea);
+        }
+
+        building.setRentarea(rentAreas);
+        modelMapper.map(request, building);
+        if (request.getFloorArea() != null) {
+            building.setFloorArea(request.getFloorArea().doubleValue());
+        }
+
+        if (request.getId() != null) {
+            buildingRepository.update(building);
         } else {
-            buildingRepository.insert(entity);
+            buildingRepository.insert(building);
         }
 
 
     }
+
+
+    @Override
     @Transactional
-    public void deleteBuildings(List<Long> ids) {
+    public void delete(List<Long> ids) {
         // Thực hiện vòng lặp xóa từng id trong danh sách gửi lên
         for (Long id : ids) {
             buildingRepository.delete(id);
         }
-    }
-
-    @Override
-    public void delete(List<Long> ids) {
-
     }
 
 }

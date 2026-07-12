@@ -1,15 +1,13 @@
 package com.javaweb.model;
 
-import java.util.Date;
+import java.util.List;
 
-public class CustomerSearchRequest {
+public class CustomerResponse {
     private Long id;
     private String name;
     private String email;
     private String phone;
-    private Date createDate;
-    private Date modifiedDate;
-
+    private List<String> managerStaffCustomer;
 
     public Long getId() {
         return id;
@@ -43,19 +41,11 @@ public class CustomerSearchRequest {
         this.phone = phone;
     }
 
-    public Date getCreateDate() {
-        return createDate;
+    public List<String> getManagerStaffCustomer() {
+        return managerStaffCustomer;
     }
 
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
-    }
-
-    public Date getModifiedDate() {
-        return modifiedDate;
-    }
-
-    public void setModifiedDate(Date modifiedDate) {
-        this.modifiedDate = modifiedDate;
+    public void setManagerStaffCustomer(List<String> managerStaffCustomer) {
+        this.managerStaffCustomer = managerStaffCustomer;
     }
 }
