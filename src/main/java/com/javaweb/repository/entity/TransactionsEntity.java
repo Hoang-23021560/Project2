@@ -1,10 +1,8 @@
 package com.javaweb.repository.entity;
 
 import jakarta.persistence.*;
-import org.w3c.dom.Text;
 
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Table(name = "transactions")
