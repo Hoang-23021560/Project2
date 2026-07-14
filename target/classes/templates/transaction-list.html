@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lịch sử giao dịch khách hàng</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand fw-bold text-primary" href="#">BẤT ĐỘNG SẢN WEB</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link" th:href="@{/web/building}">Quản lý Tòa nhà</a></li>
+                <li class="nav-item"><a class="nav-link active" th:href="@{/web/customer}">Quản lý Khách hàng</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <div class="mb-3">
+        <a th:href="@{/web/customer}" class="btn btn-secondary">&larr; Quay lại danh sách khách hàng</a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-info text-dark fw-bold">
+            <h4 class="mb-0">LỊCH SỬ GIAO DỊCH CỦA KHÁCH HÀNG (Mã số: <span th:text="${param.customerId}"></span>)</h4>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped table-hover align-middle">
+                    <thead class="table-dark">
+                    <tr>
+                        <th>Mã giao dịch</th>
+                        <th>Loại giao dịch</th>
+                        <th>Ghi chú / Chi tiết</th>
+                        <th>Ngày tạo</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="t : ${listTransactions}">
+                        <td th:text="${t.id}" class="text-muted"></td>
+                        <td th:text="${t.transactionType}" class="fw-bold text-danger"></td>
+                        <td th:text="${t.note}"></td>
+                        <td th:text="${#dates.format(t.createDate, 'dd-MM-yyyy HH:mm:ss')}"></td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(listTransactions)}">
+                        <td colspan="4" class="text-center text-muted py-3">Khách hàng này chưa thực hiện giao dịch nào.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
